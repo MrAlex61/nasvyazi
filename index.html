@@ -1,0 +1,230 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>НаСвязи</title>
+  <style>
+    :root {
+      --blue:#2878e8; --blue-dark:#1763ca; --bg:#f2f5fa;
+      --text:#172033; --muted:#7b8799; --line:#e8edf4;
+      --card:#fff; --shadow:0 5px 22px #1d355710;
+    }
+    *{box-sizing:border-box}
+    body{margin:0;background:var(--bg);color:var(--text);font:15px/1.45 Arial,sans-serif}
+    button,input,textarea{font:inherit}
+    button{cursor:pointer}
+    header{height:66px;padding:0 max(18px,calc((100vw - 1180px)/2));background:white;border-bottom:1px solid var(--line);display:flex;align-items:center;gap:24px;position:sticky;top:0;z-index:5}
+    .brand{color:var(--blue);font-size:23px;font-weight:800;white-space:nowrap}.brand span{color:#ff9f43}
+    .search{flex:1;max-width:480px;border:0;border-radius:12px;padding:12px 16px;background:#f3f6fa;outline-color:var(--blue)}
+    .header-user{margin-left:auto;display:flex;align-items:center;gap:10px;font-weight:600}
+    .avatar{width:42px;height:42px;border-radius:50%;display:grid;place-items:center;color:white;background:linear-gradient(135deg,#67b7ff,#7764e8);font-weight:700;flex:none}
+    main{max-width:1180px;margin:28px auto;padding:0 20px;display:grid;grid-template-columns:210px minmax(0,1fr);gap:22px;align-items:start}
+    .panel,.card{background:var(--card);border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow)}
+    nav{padding:10px;position:sticky;top:82px}
+    nav button{display:block;width:100%;text-align:left;color:#47536a;padding:12px;margin:3px 0;border:0;background:transparent;border-radius:10px}
+    nav button:hover,nav button.active{color:var(--blue);background:#edf5ff;font-weight:700}
+    .page-title{margin:0 0 16px;font-size:23px}
+    .card{padding:18px;margin-bottom:16px}
+    .composer-top{display:flex;gap:12px;align-items:flex-start}
+    textarea{resize:vertical;min-height:68px;width:100%;padding:12px 14px;border:1px solid var(--line);border-radius:12px;outline-color:var(--blue)}
+    .row{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-top:12px}
+    .primary,.secondary,.danger{border:0;border-radius:10px;padding:10px 16px;font-weight:700}
+    .primary{color:white;background:var(--blue)}.primary:hover{background:var(--blue-dark)}
+    .secondary{color:var(--blue);background:#edf5ff}.danger{color:#c7354d;background:#fff0f2}
+    .post-head{display:flex;align-items:center;gap:11px}
+    .post-name{font-weight:700}.muted,.post-time{color:var(--muted);font-size:13px}
+    .post-text{margin:16px 0;white-space:pre-wrap;overflow-wrap:anywhere}
+    .post-actions{display:flex;gap:12px;border-top:1px solid var(--line);padding-top:12px}
+    .like{border:0;padding:7px 10px;background:transparent;color:#66748a;border-radius:8px}
+    .like:hover{background:#f3f6fa}.like.liked{color:#e24e68}
+    .list{display:grid;gap:10px}
+    .person,.chat-row,.community,.event{display:flex;align-items:center;gap:12px;padding:12px;border:1px solid var(--line);border-radius:12px;background:#fff}
+    .person-info{flex:1}.person-info small{display:block;color:var(--muted);margin-top:3px}
+    .online{color:#28a56a!important}
+    .chat-layout{display:grid;grid-template-columns:230px 1fr;gap:14px}
+    .chat-list{display:grid;align-content:start;gap:8px}
+    .chat-row{cursor:pointer}.chat-row.selected{border-color:#9dc5ff;background:#f2f8ff}
+    .chat-box{border:1px solid var(--line);border-radius:12px;min-height:360px;display:flex;flex-direction:column;overflow:hidden}
+    .chat-title{padding:13px;border-bottom:1px solid var(--line);font-weight:700}
+    .messages{flex:1;padding:14px;display:flex;flex-direction:column;gap:9px;max-height:390px;overflow:auto}
+    .bubble{max-width:80%;padding:9px 12px;border-radius:13px;background:#f0f3f8;align-self:flex-start;overflow-wrap:anywhere}
+    .bubble.mine{background:#e6f1ff;align-self:flex-end}
+    .send-row{display:flex;gap:8px;padding:12px;border-top:1px solid var(--line)}
+    .send-row input{flex:1;min-width:0;padding:10px;border:1px solid var(--line);border-radius:10px}
+    .photo-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px}
+    .photo-tile{aspect-ratio:1;display:grid;place-items:center;background:linear-gradient(135deg,#cce6ff,#e5d9ff);border-radius:12px;overflow:hidden}
+    .photo-tile img{width:100%;height:100%;object-fit:cover}
+    .profile-head{display:flex;align-items:center;gap:16px}.profile-head .avatar{width:76px;height:76px;font-size:24px}
+    .empty{padding:28px;text-align:center;color:var(--muted);background:#fff;border:1px dashed #cdd6e3;border-radius:12px}
+    .hidden{display:none!important}
+    @media(max-width:700px){header{padding:0 12px;gap:12px}.search{display:none}main{display:block;margin:14px auto;padding:0 12px}nav{position:static;display:flex;overflow:auto;margin-bottom:14px}nav button{width:auto;white-space:nowrap;padding:9px} .chat-layout{grid-template-columns:1fr}.chat-list{grid-template-columns:repeat(2,minmax(0,1fr))}}
+  </style>
+</head>
+<body>
+<header>
+  <div class="brand">На<span>Связи</span></div>
+  <input id="search" class="search" type="search" placeholder="Поиск людей и публикаций">
+  <div class="header-user"><div class="avatar">АИ</div><span>Анна</span></div>
+</header>
+
+<main>
+  <nav id="nav">
+    <button class="active" data-page="feed">🏠 Лента</button>
+    <button data-page="friends">👥 Друзья</button>
+    <button data-page="messages">✉️ Сообщения</button>
+    <button data-page="holidays">🎉 Праздники</button>
+    <button data-page="groups">👪 Сообщества</button>
+    <button data-page="photos">📷 Фотографии</button>
+    <button data-page="profile">👤 Моя страница</button>
+  </nav>
+  <section id="content"></section>
+</main>
+
+<script>
+(() => {
+  const $ = s => document.querySelector(s);
+  const content = $("#content");
+  const me = {name:"Анна Иванова", initials:"АИ"};
+  const starterPosts = [
+    {id:1,name:"Елена Смирнова",initials:"ЕС",text:"Как приятно встретить старых друзей! Давайте чаще быть на связи 😊",likes:4},
+    {id:2,name:"Михаил Петров",initials:"МП",text:"Семейный вечер, чай и хорошие воспоминания. Всем тёплого вечера! ☕",likes:12}
+  ];
+  const starterFriends = [
+    {name:"Михаил Петров",initials:"МП",status:"В сети"},
+    {name:"Елена Смирнова",initials:"ЕС",status:"В сети"},
+    {name:"Дмитрий Ковалёв",initials:"ДК",status:"Был недавно"}
+  ];
+  const read = (key, fallback) => {
+    try { const x=JSON.parse(localStorage.getItem("ns-"+key)); return x===null?fallback:x; }
+    catch { return fallback; }
+  };
+  const write = (key,value) => localStorage.setItem("ns-"+key,JSON.stringify(value));
+  let posts=read("posts",starterPosts), friends=read("friends",starterFriends);
+  let messages=read("messages",{}), photos=read("photos",[]), joined=read("joined",[]);
+  let activeChat=friends[0]?.name || "";
+  let currentPage="feed";
+
+  function escapeHTML(s){return String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));}
+  function avatar(initials,style=""){return `<div class="avatar" style="${style}">${escapeHTML(initials)}</div>`;}
+  function title(t){return `<h1 class="page-title">${t}</h1>`;}
+  function empty(t){return `<div class="empty">${t}</div>`;}
+
+  function renderFeed(filter=""){
+    const list=posts.filter(p=>(p.text+" "+p.name).toLowerCase().includes(filter.toLowerCase()));
+    return title("Лента")+`
+      <div class="card">
+        <div class="composer-top">${avatar(me.initials)}<textarea id="postText" placeholder="Чем хотите поделиться?"></textarea></div>
+        <div class="row"><span class="muted">Будьте на связи с близкими 💙</span><button class="primary" id="publish">Опубликовать</button></div>
+      </div>
+      ${list.length?list.map(p=>`<article class="card">
+        <div class="post-head">${avatar(p.initials)}<div><div class="post-name">${escapeHTML(p.name)}</div><div class="post-time">${escapeHTML(p.time||"Недавно")}</div></div></div>
+        <div class="post-text">${escapeHTML(p.text)}</div>
+        <div class="post-actions"><button class="like" data-like="${p.id}">♡ Нравится · ${p.likes||0}</button><button class="like" data-comment="${p.id}">💬 Комментировать</button></div>
+        <div id="comments-${p.id}"></div>
+      </article>`).join(""):empty("Ничего не найдено.")}`;
+  }
+
+  function renderFriends(){
+    return title("Друзья")+`<div class="card"><div class="row" style="margin-top:0"><input id="friendName" placeholder="Имя друга" style="flex:1;padding:11px;border:1px solid var(--line);border-radius:10px"><button class="primary" id="addFriend">Добавить</button></div></div>
+      <div class="list">${friends.length?friends.map((f,i)=>`<div class="person">${avatar(f.initials)}<div class="person-info"><strong>${escapeHTML(f.name)}</strong><small class="${f.status==="В сети"?"online":""}">${escapeHTML(f.status||"Друг")}</small></div><button class="secondary" data-message="${escapeHTML(f.name)}">Написать</button><button class="danger" data-remove="${i}" aria-label="Удалить друга">×</button></div>`).join(""):empty("Пока друзей нет. Добавьте друга выше.")}</div>`;
+  }
+
+  function renderMessages(){
+    if(!activeChat) activeChat=friends[0]?.name||"";
+    return title("Сообщения")+`<div class="card chat-layout">
+      <div class="chat-list">${friends.length?friends.map(f=>`<div class="chat-row ${activeChat===f.name?"selected":""}" data-chat="${escapeHTML(f.name)}">${avatar(f.initials)}<div>${escapeHTML(f.name)}<small class="muted">${escapeHTML(f.status||"")}</small></div></div>`).join(""):empty("Сначала добавьте друга.")}</div>
+      <div class="chat-box"><div class="chat-title">${activeChat?escapeHTML(activeChat):"Выберите друга"}</div>
+      <div class="messages" id="messages">${(messages[activeChat]||[]).map(m=>`<div class="bubble ${m.mine?"mine":""}">${escapeHTML(m.text)}</div>`).join("")}</div>
+      <div class="send-row"><input id="messageText" placeholder="Написать сообщение…" ${activeChat?"":"disabled"}><button class="primary" id="send" ${activeChat?"":"disabled"}>Отправить</button></div></div>
+    </div>`;
+  }
+
+  const groups=[
+    ["Семейный круг","Новости и фотографии семьи"],["Наш город","События и места рядом"],["Любимые фильмы","Обсуждаем кино"]
+  ];
+  function renderGroups(){return title("Сообщества")+`<div class="list">${groups.map((g,i)=>`<div class="community"><div class="avatar">👥</div><div class="person-info"><strong>${g[0]}</strong><small>${g[1]}</small></div><button class="${joined.includes(i)?"secondary":"primary"}" data-join="${i}">${joined.includes(i)?"Вы участник":"Вступить"}</button></div>`).join("")}</div>`;}
+
+  function renderHolidays(){
+    const items=[["🎂","День рождения Михаила","Завтра"],["🎈","День рождения Елены","Через неделю"],["💐","Годовщина знакомства","Скоро"]];
+    return title("Праздники")+`<div class="list">${items.map(e=>`<div class="event"><div style="font-size:28px">${e[0]}</div><div><strong>${e[1]}</strong><div class="muted">${e[2]}</div></div><button class="secondary" data-greet="${e[1]}">Поздравить</button></div>`).join("")}</div>`;
+  }
+
+  function renderPhotos(){
+    return title("Фотографии")+`<div class="card"><label class="primary" style="display:inline-block">Добавить фото<input id="photoInput" type="file" accept="image/*" multiple hidden></label><span class="muted"> Фото сохраняются только в этом браузере.</span></div>
+      ${photos.length?`<div class="photo-grid">${photos.map((p,i)=>`<div class="photo-tile"><img src="${p}" alt="Загруженная фотография"><button class="danger" data-delphoto="${i}" style="position:absolute">Удалить</button></div>`).join("")}</div>`:empty("Загруженных фотографий пока нет.")}`;
+  }
+
+  function renderProfile(){
+    const bio=read("bio","Расскажите друзьям о себе.");
+    return title("Моя страница")+`<div class="card"><div class="profile-head">${avatar(me.initials)}<div><h2 style="margin:0">${me.name}</h2><span class="muted">НаСвязи с близкими</span></div></div>
+      <h3>О себе</h3><textarea id="bio">${escapeHTML(bio)}</textarea><div class="row"><span class="muted">Профиль виден только в этом браузере</span><button class="primary" id="saveBio">Сохранить</button></div></div>
+      <div class="card"><strong>Публикаций: ${posts.length}</strong>　<strong>Друзей: ${friends.length}</strong></div>`;
+  }
+
+  function render(){
+    const filter=$("#search").value.trim();
+    const pages={feed:()=>renderFeed(filter),friends:renderFriends,messages:renderMessages,holidays:renderHolidays,groups:renderGroups,photos:renderPhotos,profile:renderProfile};
+    content.innerHTML=(pages[currentPage]||pages.feed)();
+    $("#nav").querySelectorAll("button").forEach(b=>b.classList.toggle("active",b.dataset.page===currentPage));
+    bind();
+  }
+
+  function bind(){
+    $("#publish")?.addEventListener("click",()=>{
+      const box=$("#postText"),text=box.value.trim(); if(!text){box.focus();return;}
+      posts.unshift({id:Date.now(),name:me.name,initials:me.initials,text,likes:0,time:"Только что"});
+      write("posts",posts);render();
+    });
+    content.querySelectorAll("[data-like]").forEach(b=>b.addEventListener("click",()=>{
+      const p=posts.find(x=>x.id==b.dataset.like);if(p){p.likes=(p.likes||0)+1;write("posts",posts);render();}
+    }));
+    content.querySelectorAll("[data-comment]").forEach(b=>b.addEventListener("click",()=>{
+      const id=b.dataset.comment,box=document.getElementById("comments-"+id);
+      const text=prompt("Введите комментарий:");
+      if(text?.trim()){const list=read("comments-"+id,[]);list.push({name:me.name,text:text.trim()});write("comments-"+id,list);box.innerHTML=list.map(c=>`<p><strong>${escapeHTML(c.name)}:</strong> ${escapeHTML(c.text)}</p>`).join("");}
+    }));
+    $("#addFriend")?.addEventListener("click",()=>{
+      const box=$("#friendName"),name=box.value.trim();if(!name)return;
+      if(friends.some(f=>f.name.toLowerCase()===name.toLowerCase())){alert("Этот человек уже в списке.");return;}
+      friends.push({name,initials:name.split(/\s+/).map(x=>x[0]).join("").slice(0,2).toUpperCase(),status:"Новый друг"});
+      write("friends",friends);render();
+    });
+    content.querySelectorAll("[data-remove]").forEach(b=>b.addEventListener("click",()=>{
+      friends.splice(Number(b.dataset.remove),1);write("friends",friends);if(!friends.some(f=>f.name===activeChat))activeChat=friends[0]?.name||"";render();
+    }));
+    content.querySelectorAll("[data-message]").forEach(b=>b.addEventListener("click",()=>{activeChat=b.dataset.message;currentPage="messages";render();}));
+    content.querySelectorAll("[data-chat]").forEach(b=>b.addEventListener("click",()=>{activeChat=b.dataset.chat;render();}));
+    $("#send")?.addEventListener("click",sendMessage);
+    $("#messageText")?.addEventListener("keydown",e=>{if(e.key==="Enter")sendMessage();});
+    function sendMessage(){
+      const box=$("#messageText"),text=box?.value.trim();if(!text||!activeChat)return;
+      messages[activeChat]=messages[activeChat]||[];messages[activeChat].push({text,mine:true});
+      write("messages",messages);render();$("#messages")?.scrollTo(0,999999);
+    }
+    content.querySelectorAll("[data-join]").forEach(b=>b.addEventListener("click",()=>{
+      const i=Number(b.dataset.join);joined=joined.includes(i)?joined.filter(x=>x!==i):[...joined,i];write("joined",joined);render();
+    }));
+    content.querySelectorAll("[data-greet]").forEach(b=>b.addEventListener("click",()=>{currentPage="messages";activeChat=friends[0]?.name||"";render();if(activeChat){$("#messageText").value="Поздравляю! 🎉";$("#messageText").focus();}}));
+    $("#photoInput")?.addEventListener("change",async e=>{
+      for(const file of e.target.files){
+        if(!file.type.startsWith("image/"))continue;
+        const data=await new Promise(resolve=>{const r=new FileReader();r.onload=()=>resolve(r.result);r.readAsDataURL(file);});
+        photos.push(data);
+      }
+      try{write("photos",photos);render();}catch{alert("Не удалось сохранить фотографии: в браузере закончилось место. Выберите файлы поменьше.");}
+    });
+    content.querySelectorAll("[data-delphoto]").forEach(b=>b.addEventListener("click",()=>{photos.splice(Number(b.dataset.delphoto),1);write("photos",photos);render();}));
+    $("#saveBio")?.addEventListener("click",()=>{write("bio",$("#bio").value.trim());alert("Информация сохранена.");});
+  }
+
+  $("#nav").addEventListener("click",e=>{
+    const b=e.target.closest("[data-page]");if(!b)return;
+    currentPage=b.dataset.page;render();
+  });
+  $("#search").addEventListener("input",()=>{if(currentPage!=="feed"){currentPage="feed";render();}else render();});
+  render();
+})();
+</script>
+</body>
+</html>
